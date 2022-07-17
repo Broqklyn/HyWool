@@ -23,6 +23,16 @@ partnerNames = ["DaBqmb#0001", "Expiry#0005", "Dru#1000", "Lennos#3244", "RgB2#0
 
 botDev = ["DaBqmb#0001"]
 
+# Achievement progression emojis
+level_emojis = {
+    0: ":zero:",
+	1: ":one:",
+	2: ":two:",
+	3: ":three:",
+	4: ":four:",
+	5: ":five: :white_check_mark:"
+}
+
 @bot.event
 async def on_ready():
     print('Connected to woolwars.net!')
@@ -104,44 +114,20 @@ async def wwcalc(ctx, arg=None):
 
 @bot.command()
 async def wwlbs(ctx):
-
     r = requests.get('http://woolwars.net/leaderboard/detailed')
-    kson2 = r.json()
-        
-    first = kson2["general"]["experience"][0]["ign"]
-    firstlvl = kson2["general"]["experience"][0]["value"]
-    first1 = kson2["general"]["experience"][1]["ign"]
-    firstlvl1 = kson2["general"]["experience"][1]["value"]
-    first2 = kson2["general"]["experience"][2]["ign"]
-    firstlvl2 = kson2["general"]["experience"][2]["value"]
-    first3 = kson2["general"]["experience"][3]["ign"]
-    firstlvl3 = kson2["general"]["experience"][3]["value"]
-    first4 = kson2["general"]["experience"][4]["ign"]
-    firstlvl4 = kson2["general"]["experience"][4]["value"]
-    first5 = kson2["general"]["experience"][5]["ign"]
-    firstlvl5 = kson2["general"]["experience"][5]["value"]
-    first6 = kson2["general"]["experience"][6]["ign"]
-    firstlvl6 = kson2["general"]["experience"][6]["value"]
-    first7 = kson2["general"]["experience"][7]["ign"]
-    firstlvl7 = kson2["general"]["experience"][7]["value"]
-    first8 = kson2["general"]["experience"][8]["ign"]
-    firstlvl8 = kson2["general"]["experience"][8]["value"]
-    first9 = kson2["general"]["experience"][9]["ign"]
-    firstlvl9 = kson2["general"]["experience"][9]["value"]
+    data = r.json()
 
+    loop_count = 0
     embed=discord.Embed(title="Wool Wars Level Leaderboard", color=0x7289da)
-    embed.add_field(name="**1.** " + first, value="Level: [" + str(xp_to_star(firstlvl)) + "✫]", inline=False)
-    embed.add_field(name="**2.** " + first1, value="Level: [" + str(xp_to_star(firstlvl1)) + "✫]", inline=False)
-    embed.add_field(name="**3.** " + first2, value="Level: [" + str(xp_to_star(firstlvl2)) + "✫]", inline=False)
-    embed.add_field(name="**4.** " + first3, value="Level: [" + str(xp_to_star(firstlvl3)) + "✫]", inline=False)
-    embed.add_field(name="**5.** " + first4, value="Level: [" + str(xp_to_star(firstlvl4)) + "✫]", inline=False)
-    embed.add_field(name="**6.** " + first5, value="Level: [" + str(xp_to_star(firstlvl5)) + "✫]", inline=False)
-    embed.add_field(name="**7.** " + first6, value="Level: [" + str(xp_to_star(firstlvl6)) + "✫]", inline=False)
-    embed.add_field(name="**8.** " + first7, value="Level: [" + str(xp_to_star(firstlvl7)) + "✫]", inline=False)
-    embed.add_field(name="**9.** " + first8, value="Level: [" + str(xp_to_star(firstlvl8)) + "✫]", inline=False)
-    embed.add_field(name="**10.** " + first9, value="Level: [" + str(xp_to_star(firstlvl9)) + "✫]", inline=False)
 
-    await ctx.send(embed=embed)
+    for user in data["general"]["experience"]: # Loop through the top 10 users on the leaderboard
+        if loop_count < 10:
+            embed.add_field(name=f"**{len(leaderboard)}.** " + user["ign"], value="Level: [" + str(xp_to_star(user["value"])) + "✫]", inline=False) # Create leaderboard embed
+            loop_count += 1
+        else:
+            await ctx.send(embed=embed) # Send the embed once the embed leaderboard has been created
+            break
+
 
 @bot.command()
 async def shop(ctx):
@@ -416,22 +402,22 @@ async def wwp(ctx, arg=None):
         r1 = requests.get('http://woolwars.net/player/update?uuid=' + uuid + '&ranks=true')
 
         json1 = r1.json()
-        coin = json1["general"]["coins"]
-        star = json1["general"]["star"]
-        powerups = json1["stats"]["overall"]["powerups_gotten"]
-        layers = json1["general"]["available_layers"]
-        clas = json1["general"]["selected_class"]
-        ws = json1["general"]["winstreak"]
-        hws = json1["general"]["highest_winstreak"]
-        win = json1["stats"]["overall"]["wins"]
-        los = json1["stats"]["overall"]["losses"]
-        deaths = json1["stats"]["overall"]["deaths"]
-        wlr = json1["stats"]["overall"]["wlr"]
-        kdr = json1["stats"]["overall"]["kdr"]
-        kills = json1["stats"]["overall"]["kills"]
-        assists = json1["stats"]["overall"]["assists"]
-        placed = json1["stats"]["overall"]["wool_placed"]
-        broken = json1["stats"]["overall"]["blocks_broken"]
+        coin = json["general"]["coins"]
+        star = json["general"]["star"]
+        powerups = json["stats"]["overall"]["powerups_gotten"]
+        layers = json["general"]["available_layers"]
+        clas = json["general"]["selected_class"]
+        ws = json["general"]["winstreak"]
+        hws = json["general"]["highest_winstreak"]
+        win = json["stats"]["overall"]["wins"]
+        los = json["stats"]["overall"]["losses"]
+        deaths = json["stats"]["overall"]["deaths"]
+        wlr = json["stats"]["overall"]["wlr"]
+        kdr = json["stats"]["overall"]["kdr"]
+        kills = json["stats"]["overall"]["kills"]
+        assists = json["stats"]["overall"]["assists"]
+        placed = json["stats"]["overall"]["wool_placed"]
+        broken = json["stats"]["overall"]["blocks_broken"]
 
         await msg.delete()
 
@@ -475,15 +461,15 @@ async def wwlb(ctx, arg=None):
 
         r1 = requests.get('http://woolwars.net/player/update?uuid=' + uuid + '&ranks=true')
 
-        json1 = r1.json()
+        json = r1.json()
 
-        killz = json1["stats"]["overall"]["kills_rank"] 
-        winz = json1["stats"]["overall"]["wins_rank"]
-        deathz = json1["stats"]["overall"]["deaths_rank"]
-        bbroken = json1["stats"]["overall"]["blocks_broken_rank"]
-        wplaced = json1["stats"]["overall"]["wool_placed_rank"]
-        apos = json1["stats"]["overall"]["assists_rank"]
-        pupos = json1["stats"]["overall"]["powerups_gotten_rank"]
+        killz = json["stats"]["overall"]["kills_rank"] 
+        winz = json["stats"]["overall"]["wins_rank"]
+        deathz = json["stats"]["overall"]["deaths_rank"]
+        bbroken = json["stats"]["overall"]["blocks_broken_rank"]
+        wplaced = json["stats"]["overall"]["wool_placed_rank"]
+        apos = json["stats"]["overall"]["assists_rank"]
+        pupos = json["stats"]["overall"]["powerups_gotten_rank"]
 
         await msg.delete()
 
@@ -583,51 +569,11 @@ async def wwa(ctx, arg=None):
 
         embed=discord.Embed(title=arg + "'s Tiered Achievements Progression", description="", color=0x9b59b6)
 
-        if wool_warrior == 1:
-            embed.add_field(name="Wool Warrior:", value="Level: :one:", inline=True)
-        if wool_warrior == 2:
-            embed.add_field(name="Wool Warrior:", value="Level: :two:", inline=True)
-        if wool_warrior == 3:
-            embed.add_field(name="Wool Warrior:", value="Level: :three:", inline=True)
-        if wool_warrior == 4:
-            embed.add_field(name="Wool Warrior:", value="Level: :four:", inline=True)
-        if wool_warrior == 5:
-            embed.add_field(name="Wool Warrior:", value="Level: :five: :white_check_mark:", inline=True)
-
-        if wool_killer == 1:
-            embed.add_field(name="Wool Killer:", value="Level: :one:", inline=True)
-        if wool_killer == 2:
-            embed.add_field(name="Wool Killer:", value="Level: :two:", inline=True)
-        if wool_killer == 3:
-            embed.add_field(name="Wool Killer:", value="Level: :three:", inline=True)
-        if wool_killer == 4:
-            embed.add_field(name="Wool Killer:", value="Level: :four:", inline=True)
-        if wool_killer == 5:
-            embed.add_field(name="Wool Killer:", value="Level: :five: :white_check_mark:", inline=True)
-
-        if wool_contest == 1:
-            embed.add_field(name="Wool Contest:", value="Level: :one:", inline=True)
-        if wool_contest == 2:
-            embed.add_field(name="Wool Contest:", value="Level: :two:", inline=True)
-        if wool_contest == 3:
-            embed.add_field(name="Wool Contest:", value="Level: :three:", inline=True)
-        if wool_contest == 4:
-            embed.add_field(name="Wool Contest:", value="Level: :four:", inline=True)
-        if wool_contest == 5:
-            embed.add_field(name="Wool Contest:", value="Level: :five: :white_check_mark:", inline=True)
-
-        if wool_moutain == 0:
-            embed.add_field(name="Mountain of Wool:", value="Level: :zero:", inline=True)
-        if wool_moutain == 1:
-            embed.add_field(name="Mountain of Wool:", value="Level: :one:", inline=True)
-        if wool_moutain == 2:
-            embed.add_field(name="Mountain of Wool:", value="Level: :two:", inline=True)
-        if wool_moutain == 3:
-            embed.add_field(name="Mountain of Wool:", value="Level: :three:", inline=True)
-        if wool_moutain == 4:
-            embed.add_field(name="Mountain of Wool", value="Level: :four:", inline=True)
-        if wool_moutain == 5:
-            embed.add_field(name="Mountain of Wool:", value="Level: :five: :white_check_mark:", inline=True)
+        # Less hard coded, so it's simpler to change the numeric emojis later as you please
+        embed.add_field(name="Wool Warrior:", value="Level: "+level_emojis[wool_warrior], inline=True)
+        embed.add_field(name="Wool Killer:", value="Level: "+level_emojis[wool_killer], inline=True)
+        embed.add_field(name="Wool Contest:", value="Level: "+level_emojis[wool_contest], inline=True)
+        embed.add_field(name="Mountain of Wool:", value="Level: "+level_emojis[wool_mountain, inline=True)
         
         await ctx.send(embed=embed)
 
