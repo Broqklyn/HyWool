@@ -573,7 +573,7 @@ async def wwa(ctx, arg=None):
         embed.add_field(name="Wool Warrior:", value="Level: "+level_emojis[wool_warrior], inline=True)
         embed.add_field(name="Wool Killer:", value="Level: "+level_emojis[wool_killer], inline=True)
         embed.add_field(name="Wool Contest:", value="Level: "+level_emojis[wool_contest], inline=True)
-        embed.add_field(name="Mountain of Wool:", value="Level: "+level_emojis[wool_mountain, inline=True)
+        embed.add_field(name="Mountain of Wool:", value="Level: "+level_emojis[wool_mountain], inline=True)
         
         await ctx.send(embed=embed)
 
